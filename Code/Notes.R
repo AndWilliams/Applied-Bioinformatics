@@ -41,6 +41,19 @@ file = 'https://raw.githubusercontent.com/rsh249/applied_bioinformatics2020/mast
 cars = read.table(file, header=T, sep = ',') # Read a comma separated values file
 head(cars)
 
+#plotting data
+plot(cars)
+#trying to plot columns 3 and 5
+plot(cars[,c(3,5)])
+#plot column 3 & 4
+plot(cars[,3:4])
+head(cars)
+
+#Call column by name
+print(cars[, "cyl"])
+print(cars[,c("cyl", "hp")])
+
+
 #writing files
 write.table(cars, file='mtcars.tab')
 
