@@ -73,7 +73,10 @@ allhits = blasthits[1:500000,] %>%
 
 #plot this
 (lca_plot = ggplot(allhits %>% filter(!is.na(last_common)) ) +
-    geom_col(aes(x=last_common, y=lca_count))) + 
+    geom_col(aes(x=last_common, y=lca_count)) + 
   scale_y_log10() +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle=90))
+  theme(axis.text.x = element_text(angle=90)))
+
+#saving the ggplot and using ggsave it puts it in your current working directory
+ggsave(lca_plot, file='lca_plot.png', height=8, width=8, dpi=700)
