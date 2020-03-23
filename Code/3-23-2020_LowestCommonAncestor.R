@@ -1,5 +1,6 @@
 library(dplyr)
 library(rBLAST)
+library(ggplot2)
 
 download.file('https://zenodo.org/record/3686052/files/blasthits2.tab.gz?download=1',overwrite=T, destfile = 'blasthits2.tab.gz')
 system('gunzip blasthits2.tab.gz')
@@ -58,3 +59,21 @@ listhits =blasthits[1:10000,] %>%
   group_modify(~ lca(.x))
 
 unique(listhits$last_common)
+
+#preparing for plotting
+#Analyze first part of the results
+allhits = blasthits[1:500000,] %>%
+  group_by(QueryID) %>%
+  group_modify(~ lca(.x)) %>%
+  slice(1) %>% #keep only first row in each group (one per read)
+  group_by(last_common) %>% # group by LCA taxon
+  summarize(lca_count = n()) %>% # count num reads (rows) for each LCA
+  arrange(desc(lca_count)) # sort descending
+
+
+#plot this
+(lca_plot = ggplot(allhits %>% filter(!is.na(last_common)) ) +
+    geom_col(aes(x=last_common, y=lca_count))) + 
+  scale_y_log10() +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle=90))
