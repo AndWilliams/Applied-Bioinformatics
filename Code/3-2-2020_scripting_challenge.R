@@ -35,7 +35,7 @@ cltop = cltax %>%
   group_by(QueryID) %>% 
   top_n(n=1, wt=Bits)
 
-(ggplot(data=cltop) +
+(plo=ggplot(data=cltop) +
     geom_bar(aes(x=fct_infreq(genus))) +
     theme_minimal() +
     theme(    
@@ -44,3 +44,4 @@ cltop = cltax %>%
     xlab('')
   
 )
+ggsave('plot1.pdf', plo)
