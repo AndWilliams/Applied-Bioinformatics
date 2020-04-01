@@ -37,32 +37,28 @@ plus <- function(x,y){
 plus(1,1)
 
 
-lca <- function(x){
- #x a subset of BLAST hits for one read
-    taxnames = c('superkingdom', 'phylum', 'order', 'family', 'genus', 'species')
-    shortnames = apply(x, 2, unique)
-    countshnames = sapply(shortnames, length)
-    lastuni = tail(names(countshnames[countshnames==1]), n=1)
-    nombre = as.data.frame(x[1,which(colnames(x) == lastuni)])
-    ret = x %>% 
-      mutate(last_common = as.character(nombre[[1]])) %>%
-      mutate(level_lca = lastuni)
-    return(ret)
+lca = function(x) {
+  require(dplyr)
+  setwd("/projectnb/ct-shbioinf/awillia5/Applied-Bioinformatics")
+  taxnames = c('superkingdom', 'phylum', 'order', 'family', 'genus', 'species')
+  shortnames = apply(x[,taxnames], 2, unique)
+  countshnames = sapply(shortnames, length)
+  lastuni = tail(names(countshnames[countshnames==1]), n=1)
+  nombre = as.data.frame(x[1,which(colnames(x) == lastuni)])
+  ret = x %>% 
+    mutate(last_common = as.character(nombre[[1]])) %>%
+    mutate(level_lca = lastuni)
+  return(ret)
 }
 
-test1=lca(listhits[[1]])
-test1$last_common
+# read file 
+blasthits = read.table('SRR7627064.fastq')
 
 
-listhits =blasthits[1:10000,] %>%
-  group_by(QueryID) %>%
-  group_modify(~ lca(.x))
 
-unique(listhits$last_common)
-
-#preparing for plotting
+# Analyze
 #Analyze first part of the results
-allhits = blasthits[1:500000,] %>%
+allhits = blasthits[1:5000,] %>%
   group_by(QueryID) %>%
   group_modify(~ lca(.x)) %>%
   slice(1) %>% #keep only first row in each group (one per read)
@@ -74,9 +70,9 @@ allhits = blasthits[1:500000,] %>%
 #plot this
 (lca_plot = ggplot(allhits %>% filter(!is.na(last_common)) ) +
     geom_col(aes(x=last_common, y=lca_count)) + 
-  scale_y_log10() +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle=90)))
+    scale_y_log10() +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle=90)))
 
 #saving the ggplot and using ggsave it puts it in your current working directory
 ggsave(lca_plot, file='lca_plot.png', height=8, width=8, dpi=700)
