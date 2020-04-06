@@ -15,7 +15,7 @@ Sys.setenv(PATH=paste(Sys.getenv("PATH"), "/share/pkg.7/blast+/2.7.1/install/bin
 Sys.setenv(PATH=paste(Sys.getenv("PATH"), "/share/pkg.7/sratoolkit/2.9.2/install/bin/", sep=":"))
 
 
-srr=c('SRR11043497')
+srr=c('SRR11043494')
 system(paste('fastq-dump', srr, sep=' '))
 
 dna = readFastq('.', pattern=srr)

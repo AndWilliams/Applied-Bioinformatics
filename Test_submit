@@ -4,7 +4,7 @@
 #$ -pe omp 12
 
 #Give the name to the job
-#$ -N blast_test
+#$ -N blast_Query
 
 #Send an email when the job is finished (or aborted)
 #$ -m ae
@@ -29,4 +29,4 @@ module load sratoolkit
 
 cd /projectnb/ct-shbioinf/awillia5/Applied-Bioinformatics #use your notes or project folder. Wherever your script is located
 
-Rscript 'Code/test.R' #run the script
+Rscript 'Code/rBLAST.R' #run the script
